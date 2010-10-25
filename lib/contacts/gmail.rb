@@ -6,7 +6,7 @@ class Contacts
     CONTACTS_SCOPE = 'http://www.google.com/m8/feeds/'
     CONTACTS_FEED = CONTACTS_SCOPE + 'contacts/default/full/?max-results=1000'
     
-    GROUP_FEED = "http://www.google.com/m8/feeds/groups/default/base/6"
+    GROUP_FEED = 'http://www.google.com/m8/feeds/groups/default/base/6'
     
     def contacts
       return @contacts if @contacts
@@ -20,7 +20,7 @@ class Contacts
       
       group_url = groups.elements.to_a('id').collect.first.text
       
-      full_feed = group_url.blank? CONTACTS_FEED ? CONTACTS_FEED + "&group=#{group_url}"
+      full_feed = group_url.blank? ? CONTACTS_FEED : CONTACTS_FEED + "&group=#{group_url}"
       
       feed = @client.get(full_feed).to_xml
       
