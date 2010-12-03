@@ -1,5 +1,5 @@
 require 'hpricot'
-require 'fastercsv'
+require 'csv'
 
 class Contacts
   class AolImporter < Base
@@ -134,7 +134,7 @@ class Contacts
 
 
     def parse(data, options={})
-      data = FasterCSV.parse(data)
+      data = CSV.parse(data)
       col_names = data.shift
       @contacts = data.map do |person|
         ["#{person[0]} #{person[1]}", person[4]] if person[4] && !person[4].empty?

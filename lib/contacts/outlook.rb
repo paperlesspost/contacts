@@ -1,4 +1,4 @@
-require 'fastercsv'
+require 'csv'
 
 class Contacts
   class Outlook < Base
@@ -6,7 +6,7 @@ class Contacts
     def initialize(file)
       @contact_file = Array.new
       file.each do |line|
-        @contact_file << FasterCSV.parse(line)[0]
+        @contact_file << CSV.parse(line)[0]
       end
       @full_name = false
       @header_indexes = Hash.new
@@ -52,5 +52,7 @@ class Contacts
     end
     
   end
-  FILETYPES[:outlook] = Outlook
+  
+  private
+    FILETYPES[:outlook] = Outlook
 end

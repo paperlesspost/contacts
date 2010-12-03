@@ -31,12 +31,6 @@ class HotmailContactImporterTest < ContactImporterTestCase
     end
   end
 
-  def test_importer_fails_with_invalid_msn_password
-    assert_raise(Contacts::AuthenticationError) do
-      Contacts.new(:hotmail, "test@msn.com","wrong_password")
-    end
-  end
-
   # Since the hotmail scraper doesn't read names, test email
   def test_fetch_email
     contacts = Contacts.new(:hotmail, @account.username, @account.password).contacts
