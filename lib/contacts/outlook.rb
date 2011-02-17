@@ -40,7 +40,8 @@ class Contacts
         if(@full_name)
           contacts[i][0] = line[@header_indexes[:full_name]]
         else
-          contacts[i][0] = "#{line[@header_indexes[:first_name]]} #{line[@header_indexes[:last_name]]}"
+          contacts[i][1] = line[@header_indexes[:first_name]]
+          contacts[i][2] = line[@header_indexes[:last_name]]
         end
         @header_indexes[:email_address].each do |index|
           if line[index] && !contacts[i][1]
