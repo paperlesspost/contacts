@@ -1,4 +1,4 @@
-require 'hpricot'
+require 'nokogiri'
 require 'csv'
 
 class Contacts
@@ -32,7 +32,7 @@ class Contacts
         end
 
         # parse data and grab <input name="user" value="8QzMPIAKs2" type="hidden">
-        doc = Hpricot(data)
+        doc = Nokogiri(data)
         (doc/:input).each do |input|
           postdata["user"] = input.attributes["value"] if input.attributes["name"] == "user"
         end
@@ -100,7 +100,7 @@ class Contacts
         data, resp, cookies, forward, old_url = get(forward, cookies, old_url) + [forward]
       end
 
-      doc = Hpricot(data)
+      doc = Nokogiri(data)
       (doc/:input).each do |input|
         postdata["usrd"] = input.attributes["value"] if input.attributes["name"] == "usrd"
       end
