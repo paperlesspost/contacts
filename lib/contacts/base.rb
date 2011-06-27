@@ -186,17 +186,11 @@ class Contacts
     end
   end
 
-  class ContactsError < StandardError
-  end
-
-  class AuthenticationError < ContactsError
-  end
-
-  class ConnectionError < ContactsError
-  end
-
-  class TypeNotFound < ContactsError
-  end
+  class ContactsError < StandardError; end
+  class AuthenticationError < ContactsError; end
+  class CaptchaError < ContactsError; end
+  class ConnectionError < ContactsError; end
+  class TypeNotFound < ContactsError; end
 
   def self.new(type, login, password="", secret_key="", options={})
     if !password.nil? && password != ''  && !secret_key.nil? && secret_key != ''
