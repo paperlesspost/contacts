@@ -5,7 +5,7 @@ require 'contacts'
 class AolContactImporterTest < ContactImporterTestCase
   def setup
     super
-    @account = TestAccounts[:aolImporter]
+    @account = TestAccounts[:aol]
   end
 
   def test_successful_login
