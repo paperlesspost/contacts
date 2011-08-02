@@ -1,0 +1,23 @@
+GIT
+  remote: git://github.com/paperlesspost/gdata.git
+  revision: 91f3a5b2e701c879ae5dfcb48dec5bb039e37a7b
+  specs:
+    gdata19 (0.1.9.2)
+
+GEM
+  remote: http://rubygems.org/
+  specs:
+    hpricot (0.8.4)
+    json (1.5.3)
+    rake (0.9.2)
+    shoulda (2.11.3)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  gdata19!
+  hpricot
+  json (> 0.4.1)
+  rake
+  shoulda

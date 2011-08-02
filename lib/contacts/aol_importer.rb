@@ -134,6 +134,7 @@ class Contacts
 
 
     def parse(data, options={})
+      data.gsub!(/\"/, "") # remove "s because AOL doesn't escape them properly
       data = CSV.parse(data)
       col_names = data.shift
       @contacts = data.map do |person|

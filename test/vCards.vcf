@@ -1,0 +1,16 @@
+BEGIN:VCARD
+VERSION:3.0
+N:LastName1;FirstName1;;;
+FN:FirstName1 LastName1
+EMAIL;type=INTERNET;type=WORK;type=pref:firstname1@example.com
+CATEGORIES:test
+X-ABUID:3BCA01C2-3EF7-4BB8-BFD4-08ED31416C8F\:ABPerson
+END:VCARD
+BEGIN:VCARD
+VERSION:3.0
+N:LastName2;FirstName2;;;
+FN:FirstName2 LastName2
+EMAIL;type=INTERNET;type=WORK;type=pref:firstname2@example.com
+CATEGORIES:test
+X-ABUID:53F6702D-D2B6-4B46-8C41-CD31F743260B\:ABPerson
+END:VCARD
