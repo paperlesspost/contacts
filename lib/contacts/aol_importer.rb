@@ -14,11 +14,6 @@ class Contacts
     PROTOCOL_ERROR      = "AOL has changed its protocols, please upgrade this library first. If that does not work, dive into the code and submit a patch at http://github.com/cardmagic/contacts"
 
     def contacts
-      postdata = {
-        "file" => 'contacts',
-        "fileType" => 'csv'
-      }
-
       return @contacts if @contacts
       if connected?
         data, resp, cookies, forward, old_url = get(CONTACT_LIST_URL, @cookies, CONTACT_LIST_URL) + [CONTACT_LIST_URL]
@@ -29,12 +24,6 @@ class Contacts
 
         if resp.code_type != Net::HTTPOK
           raise ConnectionError, self.class.const_get(:PROTOCOL_ERROR)
-        end
-
-        # parse data and grab <input name="user" value="8QzMPIAKs2" type="hidden">
-        doc = Nokogiri(data)
-        (doc/:input).each do |input|
-          postdata["user"] = input.attributes["value"] if input.attributes["name"] == "user"
         end
 
         data, resp, cookies, forward, old_url = get(CONTACT_LIST_CSV_URL, @cookies, CONTACT_LIST_URL) + [CONTACT_LIST_URL]
@@ -100,16 +89,13 @@ class Contacts
         data, resp, cookies, forward, old_url = get(forward, cookies, old_url) + [forward]
       end
 
-      doc = Nokogiri(data)
-      (doc/:input).each do |input|
-        postdata["usrd"] = input.attributes["value"] if input.attributes["name"] == "usrd"
-      end
+      doc = Nokogiri::HTML(data)
       # parse data for <input name="usrd" value="2726212" type="hidden"> and add it to the postdata
-
+      input = doc.css('input[name="usrd"]')
+      postdata["usrd"] = input[0]["value"] if input[0]
       postdata["SNS_SC"] = cookie_hash_from_string(cookies)["SNS_SC"]
       postdata["SNS_LDC"] = cookie_hash_from_string(cookies)["SNS_LDC"]
       postdata["LTState"] = cookie_hash_from_string(cookies)["LTState"]
-      # raise data.inspect
 
       data, resp, cookies, forward, old_url = post(LOGIN_URL, h_to_query_string(postdata), cookies, LOGIN_REFERER_URL) + [LOGIN_REFERER_URL]
 
