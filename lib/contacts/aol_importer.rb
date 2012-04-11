@@ -6,12 +6,12 @@ class Contacts
     URL                 = "http://www.aol.com/"
     LOGIN_URL           = "https://my.screenname.aol.com/_cqr/login/login.psp"
     LOGIN_REFERER_URL   = "http://webmail.aol.com/"
-    LOGIN_REFERER_PATH = "sitedomain=sns.webmail.aol.com&lang=en&locale=us&authLev=0&uitype=mini&loginId=&redirType=js&xchk=false"
-    AOL_NUM = "32319-211" # this seems to change each time they change the protocol
+    LOGIN_REFERER_PATH  = "sitedomain=sns.webmail.aol.com&lang=en&locale=us&authLev=0&uitype=mini&loginId=&redirType=js&xchk=false"
+    AOL_NUM             = "35752-111" # this seems to change each time they change the protocol
 
-    CONTACT_LIST_URL    = "http://mail.aol.com/#{AOL_NUM}/aol-6/en-us/Lite/ContactList.aspx?folder=Inbox&showUserFolders=False"
-    CONTACT_LIST_CSV_URL = "http://mail.aol.com/#{AOL_NUM}/aol-6/en-us/Lite/ABExport.aspx?command=all"
-    PROTOCOL_ERROR      = "AOL has changed its protocols, please upgrade this library first. If that does not work, dive into the code and submit a patch at http://github.com/cardmagic/contacts"
+    CONTACT_LIST_URL     = "http://mail.aol.com/#{AOL_NUM}/aol-6/en-us/Lite/ContactList.aspx"
+    CONTACT_LIST_CSV_URL = "http://mail.aol.com/#{AOL_NUM}/aol-6/en-us/Lite/ABExport.aspx?command=all" 
+    PROTOCOL_ERROR       = "AOL has changed its protocols, please upgrade this library first. If that does not work, dive into the code and submit a patch at http://github.com/cardmagic/contacts"
 
     def contacts
       postdata = {
@@ -53,6 +53,7 @@ class Contacts
 
 
     def real_connect
+      login.gsub!(/@aol.com/, '') # strip off the @aol.com for AOL logins
 
       postdata = {
         "loginId" => login,
@@ -109,7 +110,6 @@ class Contacts
       postdata["SNS_SC"] = cookie_hash_from_string(cookies)["SNS_SC"]
       postdata["SNS_LDC"] = cookie_hash_from_string(cookies)["SNS_LDC"]
       postdata["LTState"] = cookie_hash_from_string(cookies)["LTState"]
-      # raise data.inspect
 
       data, resp, cookies, forward, old_url = post(LOGIN_URL, h_to_query_string(postdata), cookies, LOGIN_REFERER_URL) + [LOGIN_REFERER_URL]
 
@@ -117,7 +117,7 @@ class Contacts
         data, resp, cookies, forward, old_url = get(forward, cookies, old_url) + [forward]
       end
 
-      if data.index("Invalid Password, Username or Email")
+      if data.index("Invalid Username or Password. Please try again.")
         raise AuthenticationError, "Username and password do not match"
       elsif data.index("Required field must not be blank")
         raise AuthenticationError, "Login and password must not be blank"
