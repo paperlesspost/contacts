@@ -1,15 +1,17 @@
+require 'csv'
+require 'rubygems'
+require 'nokogiri'
+
 class Contacts
   class Hotmail < Base
-    URL                 = "https://login.live.com/login.srf?id=2"
-    OLD_CONTACT_LIST_URL = "http://%s/cgi-bin/addresses"
-    NEW_CONTACT_LIST_URL = "http://%s/mail/GetContacts.aspx"
-    CONTACT_LIST_URL = "http://mpeople.live.com/default.aspx?pg=0"
-    COMPOSE_URL         = "http://%s/cgi-bin/compose?"
-    PROTOCOL_ERROR      = "Hotmail has changed its protocols, please upgrade this library first. If that does not work, report this error at http://rubyforge.org/forum/?group_id=2693"
+    DETECTED_DOMAINS = [ /hotmail/i, /live/i, /msn/i, /chaishop/i ]
+    URL = "https://login.live.com/login.srf?id=2"
+    CONTACT_LIST_URL = "https://mail.live.com/mail/GetContacts.aspx"
+    PROTOCOL_ERROR = "Hotmail has changed its protocols, please upgrade this library first. If that does not work, report this error at http://rubyforge.org/forum/?group_id=2693"
     PWDPAD = "IfYouAreReadingThisYouHaveTooMuchFreeTime"
-    MAX_HTTP_THREADS    = 8
 
     def real_connect
+
       data, resp, cookies, forward = get(URL)
       old_url = URL
       until forward.nil?
@@ -45,6 +47,7 @@ class Contacts
         data, resp, cookies, forward, old_url = get(forward, cookies, old_url) + [forward]
       end
 
+
       @domain = URI.parse(old_url).host
       @cookies = cookies
     rescue AuthenticationError => m
@@ -56,67 +59,35 @@ class Contacts
     end
 
     def contacts(options = {})
-      if connected?
+      if @contacts.nil? && connected?
         url = URI.parse(contact_list_url)
-        data, resp, cookies, forward = get( contact_list_url, @cookies )
+        data, resp, cookies, forward = get(get_contact_list_url, @cookies )
 
-        if resp.code_type != Net::HTTPOK
-          raise ConnectionError, self.class.const_get(:PROTOCOL_ERROR)
+
+        data.force_encoding('ISO-8859-1')
+
+        @contacts = CSV.parse(data, {:headers => true, :col_sep => data[7]}).map do |row|
+          name = ""
+          name = row["First Name"] if !row["First Name"].nil?
+          name << " #{row["Last Name"]}" if !row["Last Name"].nil?
+          [name, row["E-mail Address"] || ""]
         end
-
-        @contacts = []
-        build_contacts = []
-        go = true
-        index = 0
-
-        while(go) do
-          go = false
-          url = URI.parse(get_contact_list_url(index))
-          http = open_http(url)
-          resp, data = http.get(get_contact_list_url(index), "Cookie" => @cookies)
-
-          email_match_text_beginning = Regexp.escape("http://m.mail.live.com/?rru=compose&amp;to=")
-          email_match_text_end = Regexp.escape("&amp;")
-
-          raw_html = resp.body.split("\n").grep(/(?:e|dn)lk[0-9]+/)
-          raw_html.delete_at 0
-          raw_html.inject('') do |memo, row|
-            c_info = row.match(/(e|dn)lk([0-9])+/)
-
-            # Same contact, or different?
-            build_contacts << [] if memo != c_info[2]
-
-            # Grab info
-            case c_info[1]
-              when "e" # Email
-                build_contacts.last[1] = row.match(/#{email_match_text_beginning}(.*)#{email_match_text_end}/)[1]
-              when "dn" # Name
-                build_contacts.last[0] = row.match(/<a[^>]*>(.+)<\/a>/)[1]
-            end
-
-            # Set memo to contact id
-            c_info[2]
-          end
-
-          go = resp.body.include?("ContactList_next")
-          index += 1
-        end
-
-        build_contacts.each do |contact|
-          unless contact[1].nil?
-            # Only return contacts with email addresses
-            contact[1] = CGI::unescape(contact[1])
-            contact[1] = contact[1].gsub(/&amp;ru.*/, '').gsub(/%40/, '@')
-            @contacts << contact
-          end
-        end
-        return @contacts
+      else
+        @contacts || []
       end
     end
 
-    def get_contact_list_url(index)
-      "http://mpeople.live.com/default.aspx?pg=#{index}"
+    private
+
+    TYPES[:hotmail] = Hotmail
+
+    # the contacts url is dynamic
+    # luckily it tells us where to find it
+    def get_contact_list_url
+      data = get(CONTACT_LIST_URL, @cookies)[0]
+      html_doc = Nokogiri::HTML(data)
+      html_doc.xpath("//a")[0]["href"]
     end
   end
-  TYPES[:hotmail] = Hotmail
 end
+

@@ -9,6 +9,7 @@ GEM
   specs:
     hpricot (0.8.4)
     json (1.5.3)
+    nokogiri (1.5.2)
     rake (0.9.2)
     shoulda (2.11.3)
 
@@ -19,5 +20,6 @@ DEPENDENCIES
   gdata19!
   hpricot
   json (> 0.4.1)
+  nokogiri
   rake
   shoulda
