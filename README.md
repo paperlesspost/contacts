@@ -39,6 +39,14 @@ Contacts::Gmail.new(login, password, :captcha_token => params[:captcha_token], :
 
 See the examples/ directory.
 
+## Releasing
+
+To release the gem, bump version in `contacts.gemspec` as part of your commit and run
+
+``` bash
+$ gem release --tag
+```
+
 ## Authors
 
 * Lucas Carlson from MOG - http://mog.com
