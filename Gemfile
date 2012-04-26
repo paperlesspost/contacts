@@ -7,6 +7,10 @@ gem 'hpricot'
 gem 'nokogiri'
 gem "json", '> 0.4.1'
 
+group :development do
+  gem 'gem-release'
+end
+
 group :test do
   gem 'shoulda'
 end

@@ -7,6 +7,7 @@ GIT
 GEM
   remote: http://rubygems.org/
   specs:
+    gem-release (0.3.1)
     hpricot (0.8.4)
     json (1.5.3)
     nokogiri (1.5.2)
@@ -18,6 +19,7 @@ PLATFORMS
 
 DEPENDENCIES
   gdata19!
+  gem-release
   hpricot
   json (> 0.4.1)
   nokogiri
