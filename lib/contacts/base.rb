@@ -10,7 +10,6 @@ require "erb"
 class Contacts
   TYPES = {}
   FILETYPES = {}
-  VERSION = "1.4.1"
 
   class Base
     def initialize(login, password, options={})
