@@ -4,3 +4,4 @@ test/accounts.yml
 .rvmrc
 .idea
 *.swp
+*.gem
