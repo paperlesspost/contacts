@@ -20,8 +20,6 @@ $:.unshift(File.dirname(__FILE__)+"/contacts/")
 #  require 'json/add/rails'
 #end
 
-require 'rubygems'
-
 require 'json_picker'
 require 'base'
 require 'gmail'

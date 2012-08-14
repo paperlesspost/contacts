@@ -6,10 +6,7 @@ gem 'gdata19', :git => 'git://github.com/paperlesspost/gdata.git'
 gem 'hpricot'
 gem 'nokogiri'
 gem "json", '> 0.4.1'
-
-group :development do
-  gem 'gem-release'
-end
+gem 'test-unit'
 
 group :test do
   gem 'shoulda'
