@@ -139,6 +139,7 @@ class Contacts
         "Referer" => referer,
         "Content-Type" => 'application/x-www-form-urlencoded'
       )
+      data ||= resp.body
       data = uncompress(resp, data)
       cookies = parse_cookies(resp.response['set-cookie'], cookies)
       forward = resp.response['Location']
@@ -158,6 +159,7 @@ class Contacts
         "Cookie" => cookies,
         "Referer" => referer
       )
+      data ||= resp.body
       data = uncompress(resp, data)
       cookies = parse_cookies(resp.response['set-cookie'], cookies)
       forward = resp.response['Location']
