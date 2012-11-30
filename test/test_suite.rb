@@ -1,4 +1,4 @@
 dir = File.dirname(__FILE__)
-Dir["#{dir}/**/*_test.rb"].each do |file|
-  require file
-end
+
+# we only use aol, so only run that test
+require "#{dir}/unit/aol_contact_importer_test.rb"
