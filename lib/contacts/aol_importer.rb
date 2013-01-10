@@ -134,8 +134,17 @@ class Contacts
 
 
     def parse(data, options={})
-      data.gsub!(/\"/, "") # remove "s because AOL doesn't escape them properly
-      data = CSV.parse(data)
+      new_data = ""
+      # AOL has some bad data sent with their CSVs so we have to do some processing
+      data.each_line do |line|
+        line = line.strip
+        next if line == ""
+        line = line.gsub(/,$/, '') # remove trailing comma
+        line = line.gsub(/([^,^])"([^,])/, '\1\2') # remove quotes inside quoted fields
+        line = line.gsub(/,",/, ',,') # remove weird single quote fields that AOL throws in
+        new_data << "#{line}\n"
+      end
+      data = CSV.parse(new_data.strip)
       col_names = data.shift
       @contacts = data.map do |person|
         ["#{person[0]} #{person[1]}", person[4]] if person[4] && !person[4].empty?
