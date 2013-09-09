@@ -10,7 +10,7 @@ class Contacts
     AOL_NUM             = "35752-111" # this seems to change each time they change the protocol
 
     CONTACT_LIST_URL     = "http://mail.aol.com/#{AOL_NUM}/aol-6/en-us/Lite/ContactList.aspx"
-    CONTACT_LIST_CSV_URL = "http://mail.aol.com/#{AOL_NUM}/aol-6/en-us/Lite/ABExport.aspx?command=all" 
+    CONTACT_LIST_CSV_URL = "http://mail.aol.com/#{AOL_NUM}/aol-6/en-us/Lite/ABExport.aspx?command=all"
     PROTOCOL_ERROR       = "AOL has changed its protocols, please upgrade this library first. If that does not work, dive into the code and submit a patch at http://github.com/cardmagic/contacts"
 
     def contacts
@@ -144,7 +144,16 @@ class Contacts
         line = line.gsub(/,",/, ',,') # remove weird single quote fields that AOL throws in
         new_data << "#{line}\n"
       end
-      data = CSV.parse(new_data.strip)
+      data = []
+      begin
+        CSV.parse(new_data.strip) do |row|
+          data << row
+        end
+      rescue CSV::MalformedCSVError => e
+        # AOL returns really bad data sometimes and though we do what we can,
+        # certain cases (such as a ," inside a field) are not easily corrected.
+        # So, we just stop at that row and return what we have.
+      end
       col_names = data.shift
       @contacts = data.map do |person|
         ["#{person[0]} #{person[1]}", person[4]] if person[4] && !person[4].empty?

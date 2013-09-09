@@ -42,9 +42,11 @@ FirstName,LastName,ScreenName,NickName,E-mail,E-mail2,Phone1,Phone1Type,Phone2,P
 "Special","Char",,,"question@mark.fr",,,,,,,,,,,,"Uncategorized",,,,,,,,,,,,,,,,,,,,,,,,"Email1",,,,,
 "xdfasdf,asdfasdf,asdf","",,,,,,,,,,,,,,,"Uncategorized",,,,,,,,,,,,,,,,,,,,,,,,"ScreenName",,,,,
 "name\r\nwithlines",,,,"paperlesspost@paperlesspost.com",,,,,,,,,,,,"Auto-Added",,,,,,,,,,,,,,,,,,,,,,,,"Email1",,,,,
+"With,"Lots of weird" stu,ff","As If","",,"test2@paperlesspost.com","","",,"",,"",,"",,"",,"Uncategorized","","","","","","","","","","","","","","","","","","","",,,,"","Email1",,,,,
     }
 
+    expected_result = [["FirstName1 LastName1", "firstname1@example.com"], ["FirstName2 LastName2", "firstname2@example.com"], ["Gordon'B Digs", "w'hat@aol.com"], ["lol ", "lol@wut.tf"], ["Name with quote Last Name", "test@paperlesspost.com"], ["Special Char", "question@mark.fr"], ["name\nwithlines ", "paperlesspost@paperlesspost.com"]]
     contacts = Contacts.new(:aolImporter, @account.username, @account.password).parse(data)
-
+    assert_equal expected_result, contacts
   end
 end
