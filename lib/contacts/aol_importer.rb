@@ -150,11 +150,6 @@ class Contacts
           # So, we just stop at that row and return what we have.
         end
       end
-      #data = []
-      #begin
-        #CSV.parse(new_data.strip) do |row|
-        #  data << row
-        #end
       col_names = new_data.shift
       @contacts = new_data.map do |person|
         ["#{person[0]} #{person[1]}", person[4]] if person[4] && !person[4].empty?
