@@ -134,7 +134,7 @@ class Contacts
 
 
     def parse(data, options={})
-      new_data = ""
+      new_data = []
       # AOL has some bad data sent with their CSVs so we have to do some processing
       data.each_line do |line|
         line = line.strip
@@ -142,20 +142,21 @@ class Contacts
         line = line.gsub(/,$/, '') # remove trailing comma
         line = line.gsub(/([^,^])"([^,])/, '\1\2') # remove quotes inside quoted fields
         line = line.gsub(/,",/, ',,') # remove weird single quote fields that AOL throws in
-        new_data << "#{line}\n"
-      end
-      data = []
-      begin
-        CSV.parse(new_data.strip) do |row|
-          data << row
+        begin
+          new_data << CSV.parse(line.strip).flatten
+        rescue CSV::MalformedCSVError => e
+          # AOL returns really bad data sometimes and though we do what we can,
+          # certain cases (such as a ," inside a field) are not easily corrected.
+          # So, we just stop at that row and return what we have.
         end
-      rescue CSV::MalformedCSVError => e
-        # AOL returns really bad data sometimes and though we do what we can,
-        # certain cases (such as a ," inside a field) are not easily corrected.
-        # So, we just stop at that row and return what we have.
       end
-      col_names = data.shift
-      @contacts = data.map do |person|
+      #data = []
+      #begin
+        #CSV.parse(new_data.strip) do |row|
+        #  data << row
+        #end
+      col_names = new_data.shift
+      @contacts = new_data.map do |person|
         ["#{person[0]} #{person[1]}", person[4]] if person[4] && !person[4].empty?
       end.compact
     end
