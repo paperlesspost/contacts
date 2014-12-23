@@ -1,11 +1,13 @@
-$:.unshift(File.dirname(__FILE__)+"/contacts/")
 
-require 'json_picker'
-require 'base'
-require 'gmail'
-require 'hotmail'
-require 'yahoo'
-require 'plaxo'
-require 'vcf'
-require 'outlook'
-require 'aol_importer'
+# modules
+require 'contacts/json_picker'
+require 'contacts/base'
+
+# classes
+require 'contacts/aol_importer'
+require 'contacts/gmail'
+require 'contacts/hotmail'
+require 'contacts/outlook'
+require 'contacts/plaxo'
+require 'contacts/vcf'
+require 'contacts/yahoo'
