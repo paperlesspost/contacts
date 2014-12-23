@@ -1,3 +1,8 @@
+# libs
+# This is a patch that loads the stock gdata gem without the outdated jcode dependency
+require 'gdata/http'
+require 'gdata/client'
+require 'gdata/auth'
 
 # modules
 require 'contacts/json_picker'
