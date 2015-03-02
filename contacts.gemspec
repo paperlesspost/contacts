@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.authors = ["Lucas Carlson", "Paperless Post"]
   s.files = `git ls-files`.split($\)
   s.add_dependency("multi_json", '~>1.10', '>= 1.10.1')
-  s.add_dependency('gdata', '1.1.1.paperlesspost')
+  s.add_dependency('gdata', '1.1.2')
   s.add_dependency('hpricot')
   s.add_dependency('nokogiri')
   s.add_dependency('encryptor')
