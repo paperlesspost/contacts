@@ -1,21 +1,24 @@
-require 'gdata'
+# This is a patch that loads the stock gdata gem without the outdated jcode dependency
+require 'gdata/http'
+require 'gdata/client'
+require 'gdata/auth'
 
 class Contacts
   class Gmail < Base
-    
+
     CONTACTS_SCOPE = 'http://www.google.com/m8/feeds/'
     CONTACTS_FEED = CONTACTS_SCOPE + 'contacts/default/full/?max-results=1000'
-    
+
     def contacts
       return @contacts if @contacts
     end
-    
+
     def real_connect
       @client = GData::Client::Contacts.new
       @client.clientlogin(@login, @password, @captcha_token, @captcha_response)
-      
+
       feed = @client.get(CONTACTS_FEED).to_xml
-      
+
       @contacts = feed.elements.to_a('entry').collect do |entry|
         title, email = entry.elements['title'].text, nil
         entry.elements.each('gd:email') do |e|
